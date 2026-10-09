@@ -9,7 +9,7 @@ if ! command -v handoff >/dev/null 2>&1; then
 	exit 127
 fi
 
-set -- save --harness zero
+set -- save --harness zero --skip-without-session
 if [ -n "${HANDOFF_VERSION:-}" ]; then
 	set -- "$@" --version "$HANDOFF_VERSION"
 fi

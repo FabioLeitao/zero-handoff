@@ -2,6 +2,7 @@ package cli
 
 import (
 	"bytes"
+	"os"
 	"strings"
 	"testing"
 )
@@ -70,6 +71,40 @@ func TestSaveShowRedactsAndKeepsOrigin(t *testing.T) {
 	stdout.Reset()
 	if Main([]string{"show", "--harness", "hermes"}, nil, &stdout, &stderr) != 1 {
 		t.Fatalf("hermes filter = %q", stdout.String())
+	}
+}
+
+func TestSkipWithoutSessionWritesNothing(t *testing.T) {
+	dir := t.TempDir()
+	t.Setenv("HANDOFF_DIR", dir)
+	t.Setenv("HANDOFF_VERSION", "")
+	stdin := strings.NewReader(`{"event":"sessionEnd","sessionId":"","cwd":"/tmp/proj","stopReason":"","turns":1}`)
+	var stdout, stderr bytes.Buffer
+	code := Main([]string{"save", "--harness", "zero", "--skip-without-session"}, stdin, &stdout, &stderr)
+	if code != 0 {
+		t.Fatalf("skip code %d stderr %s", code, stderr.String())
+	}
+	if !strings.Contains(stderr.String(), "no sessionId") {
+		t.Fatalf("stderr = %q", stderr.String())
+	}
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(entries) != 0 {
+		t.Fatalf("wrote %d files", len(entries))
+	}
+	stdout.Reset()
+	if Main([]string{"show"}, nil, &stdout, &stderr) != 1 {
+		t.Fatalf("show = %q", stdout.String())
+	}
+	stderr.Reset()
+	code = Main([]string{"save", "--harness", "zero", "--version", "zero 0.9.0"}, strings.NewReader(`{"event":"sessionEnd","sessionId":"","cwd":"/tmp/proj"}`), &stdout, &stderr)
+	if code == 0 {
+		t.Fatal("save without the flag accepted an empty sessionId")
+	}
+	if !strings.Contains(stderr.String(), "sessionId") {
+		t.Fatalf("stderr = %q", stderr.String())
 	}
 }
 

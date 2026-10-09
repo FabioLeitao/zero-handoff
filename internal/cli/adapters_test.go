@@ -70,6 +70,9 @@ func TestProjectHookDeclaresHarness(t *testing.T) {
 	if !bytes.Contains(body, []byte(`"--harness"`)) || !bytes.Contains(body, []byte(`"zero"`)) {
 		t.Fatalf("project hook must pass --harness zero:\n%s", body)
 	}
+	if !bytes.Contains(body, []byte(`"--skip-without-session"`)) {
+		t.Fatalf("project hook must pass --skip-without-session:\n%s", body)
+	}
 	if !bytes.Contains(body, []byte(`"id"`)) {
 		t.Fatalf("project hook needs an id or zero drops the file:\n%s", body)
 	}
@@ -132,6 +135,9 @@ func TestPluginManifest(t *testing.T) {
 	}
 	if !bytes.Contains(hookBody, []byte("--harness zero")) {
 		t.Fatal("plugin hook must pass --harness zero")
+	}
+	if !bytes.Contains(hookBody, []byte("--skip-without-session")) {
+		t.Fatal("plugin hook must pass --skip-without-session")
 	}
 	for _, rel := range []string{
 		manifest.Tools[0].Command,
