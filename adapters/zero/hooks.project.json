@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "hooks": [
+    {
+      "id": "handoff-session-end",
+      "name": "handoff sessionEnd",
+      "event": "sessionEnd",
+      "command": "handoff",
+      "args": ["save", "--harness", "zero"],
+      "enabled": true
+    }
+  ]
+}
