@@ -6,7 +6,7 @@
       "name": "handoff sessionEnd",
       "event": "sessionEnd",
       "command": "handoff",
-      "args": ["save", "--harness", "zero"],
+      "args": ["save", "--harness", "zero", "--skip-without-session"],
       "enabled": true
     }
   ]

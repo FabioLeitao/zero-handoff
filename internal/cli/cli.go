@@ -41,6 +41,7 @@ func saveCmd(args []string, stdin io.Reader, stderr io.Writer) int {
 	session := fs.String("session", "", "origin session id")
 	cwd := fs.String("cwd", "", "origin working directory")
 	resume := fs.String("resume", "", "command that resumes this session in the writing harness")
+	skipWithoutSession := fs.Bool("skip-without-session", false, "exit 0 without writing when sessionId is empty")
 	if err := fs.Parse(args); err != nil {
 		return 2
 	}
@@ -49,7 +50,11 @@ func saveCmd(args []string, stdin io.Reader, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "handoff: %v\n", err)
 		return 2
 	}
-	entry, err := buildEntry(*note, *harness, *version, *session, *cwd, *resume, string(raw))
+	entry, err := buildEntry(*note, *harness, *version, *session, *cwd, *resume, string(raw), *skipWithoutSession)
+	if errors.Is(err, errSkipNoSession) {
+		fmt.Fprintln(stderr, "handoff: no sessionId; nothing saved")
+		return 0
+	}
 	if err != nil {
 		fmt.Fprintf(stderr, "handoff: %v\n", err)
 		return 2
@@ -118,7 +123,11 @@ type sessionPayload struct {
 	Resume     string `json:"resume"`
 }
 
-func buildEntry(note, harness, version, session, cwd, resume, raw string) (store.Entry, error) {
+// errSkipNoSession is the --skip-without-session path. Nothing is written
+// and no origin field is invented.
+var errSkipNoSession = errors.New("no sessionId")
+
+func buildEntry(note, harness, version, session, cwd, resume, raw string, skipWithoutSession bool) (store.Entry, error) {
 	var payload *sessionPayload
 	text := strings.TrimSpace(raw)
 	if text != "" && strings.HasPrefix(text, "{") {
@@ -152,6 +161,9 @@ func buildEntry(note, harness, version, session, cwd, resume, raw string) (store
 		if note == "" {
 			note = synthesizedNote(*payload)
 		}
+	}
+	if strings.TrimSpace(session) == "" && skipWithoutSession {
+		return store.Entry{}, errSkipNoSession
 	}
 	if version == "" {
 		version = strings.TrimSpace(os.Getenv("HANDOFF_VERSION"))

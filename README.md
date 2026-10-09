@@ -100,6 +100,8 @@ Checked on 2026-10-09 with a disposable profile (created with `--no-alias --no-s
 
 ## Known limits
 
+- `zero exec` in text mode has no session. In the zero fork at `db9559bb`, `shouldUseExecSession` (`internal/cli/exec_sessions.go`) is true only for `stream-json`, `--resume`, `--fork`, or `--init-session-id`. A text `zero exec` still runs `sessionEnd`, with `"sessionId":""`. `handoff save` without `--skip-without-session` then exits 2 (`missing origin fields: sessionId, resume`). With the flag, the CLI prints `handoff: no sessionId; nothing saved` on stderr, exits 0, and writes nothing. It does not invent a session id or a resume command. The zero adapters pass the flag: `adapters/zero/session-end.sh`, `adapters/zero/plugin/hooks/session-end.sh`, and `adapters/zero/hooks.project.json`.
+- The resume command stored for a zero session is `zero exec --resume <sessionId>`. The root command `zero` has no `--resume` flag; that flag is on `zero exec`. A TUI session is a regular session (`SessionKind` empty), which `IsResumableKind` accepts, so `zero exec --resume <id>` loads it. Inside the TUI the same session continues with `/resume <id>`.
 - `sessionEnd` does not carry a free-form user note. Pass `--note`, set `HANDOFF_NOTE` for the shell adapter, or put `note` in the JSON. Otherwise the note is the synthesized session-ended line.
 - A corrupt `*.json` file is skipped with a warning on stderr. One bad file does not hide a valid entry.
 - Origin fields are not redacted. A secret placed in `sessionId` or `cwd` would be stored.
