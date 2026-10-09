@@ -1,0 +1,6 @@
+# Example for a disposable Hermes profile. Do not merge this into ~/.hermes/config.yaml.
+# Interactive TUI only: `chat --oneshot` initializes the model before slash commands run.
+quick_commands:
+  remind:
+    type: exec
+    command: handoff show

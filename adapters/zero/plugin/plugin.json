@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "zero-handoff",
+  "name": "zero-handoff",
+  "description": "Save a sessionEnd handoff and recall it with origin.",
+  "version": "0.1.0",
+  "enabled": true,
+  "tools": [
+    {
+      "name": "recall_handoff",
+      "description": "Print the latest handoff entry, including the harness that wrote it.",
+      "command": "./tools/recall_handoff.sh",
+      "permission": "prompt",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "hooks": [
+    {
+      "name": "handoff-session-end",
+      "event": "sessionEnd",
+      "command": "./hooks/session-end.sh"
+    }
+  ],
+  "skills": [
+    {
+      "name": "remind",
+      "description": "Read the latest handoff entry and quote its origin.",
+      "path": "./skills/remind/SKILL.md"
+    }
+  ]
+}
