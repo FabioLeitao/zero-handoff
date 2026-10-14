@@ -65,13 +65,13 @@ Measured on 2026-10-09 with zero `0.9.0+up.3.99721c76.databoar.db9559bb.hdrtimeo
 Direct mkdir of `~/.local/share/handoff` from the hook:
 
 ```text
-mkdir: cannot create directory ‘/home/leitao/.local/share/handoff’: Read-only file system
+mkdir: cannot create directory ‘$HOME/.local/share/handoff’: Read-only file system
 ```
 
 `handoff save` to that default directory from the same hook exited 2:
 
 ```text
-handoff: mkdir /home/leitao/.local/share/handoff: read-only file system
+handoff: mkdir $HOME/.local/share/handoff: read-only file system
 ```
 
 The same binary with `HANDOFF_DIR` inside the trusted project wrote the file (`INSIDE_SAVE_OK`). The hook itself exited 0 in 31 ms.
