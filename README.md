@@ -65,13 +65,13 @@ Measured on 2026-10-09 with zero `0.9.0+up.3.99721c76.databoar.db9559bb.hdrtimeo
 Direct mkdir of `~/.local/share/handoff` from the hook:
 
 ```text
-mkdir: cannot create directory ‘/home/leitao/.local/share/handoff’: Read-only file system
+mkdir: cannot create directory ‘$HOME/.local/share/handoff’: Read-only file system
 ```
 
 `handoff save` to that default directory from the same hook exited 2:
 
 ```text
-handoff: mkdir /home/leitao/.local/share/handoff: read-only file system
+handoff: mkdir $HOME/.local/share/handoff: read-only file system
 ```
 
 The same binary with `HANDOFF_DIR` inside the trusted project wrote the file (`INSIDE_SAVE_OK`). The hook itself exited 0 in 31 ms.
@@ -106,3 +106,5 @@ Checked on 2026-10-09 with a disposable profile (created with `--no-alias --no-s
 - A corrupt `*.json` file is skipped with a warning on stderr. One bad file does not hide a valid entry.
 - Origin fields are not redacted. A secret placed in `sessionId` or `cwd` would be stored.
 - Nothing here installs a user hook, a user plugin, a write root, or a Hermes profile. Those stay opt-in.
+
+License: MIT

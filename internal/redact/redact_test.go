@@ -45,7 +45,7 @@ func TestNoteRedactsSecretShapes(t *testing.T) {
 func TestNoteLeavesOrdinaryText(t *testing.T) {
 	const input = "session ended cleanly\n" +
 		"the word token appears here\n" +
-		"path /home/leitao/.local/share/handoff\n" +
+		"path /home/user/.local/share/handoff\n" +
 		"commit dfd1fe8a1b2c3d4e5f60718293a4b5c6d7e8f901\n"
 	got := Note(input)
 	if got != input {
