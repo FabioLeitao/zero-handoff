@@ -106,3 +106,5 @@ Checked on 2026-10-09 with a disposable profile (created with `--no-alias --no-s
 - A corrupt `*.json` file is skipped with a warning on stderr. One bad file does not hide a valid entry.
 - Origin fields are not redacted. A secret placed in `sessionId` or `cwd` would be stored.
 - Nothing here installs a user hook, a user plugin, a write root, or a Hermes profile. Those stay opt-in.
+
+License: MIT
